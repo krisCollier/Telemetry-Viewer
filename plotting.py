@@ -83,25 +83,26 @@ def add_lap_delta(ref_lap, compare_lap):
     return compare_lap
 
 
-def add_deltas(ref_lap, laps):
-    delta_added_laps = [ref_lap]
-    for lap in laps:
-        if not are_same_lap(ref_lap, lap):
-            # print(f"Adding delta for {lap.print_lap_name()}")
-            delta_added_laps.append(add_lap_delta(ref_lap, lap))
+def add_deltas(laps):
+    delta_added_laps = [laps[0]]
+    ref_lap = laps[0]
+    for i in range(len(laps)):
+        if i == 0:
+            pass
+        # print(f"Adding delta for {lap.print_lap_name()}")
+        delta_added_laps.append(add_lap_delta(ref_lap, laps[i]))
     return delta_added_laps
 
 
-def process_options(ref_lap : dr.Lap, laps, options: Options):
+def process_options(laps, options: Options):
     if options.add_deltas:
-        laps = add_deltas(ref_lap, laps)
+        laps = add_deltas(laps)
 
     return laps
 
-
-def generate_plot(ref_lap, laps, columns, options: Options = None):
+def generate_plot(laps, columns, options: Options = None):
     if Options is not None:
-        laps = process_options(ref_lap, laps, options)
+        laps = process_options(laps, options)
 
     fig = get_default_fig()
     fig.set_subplots(rows=len(columns), cols=1, shared_xaxes=True, vertical_spacing=0.005,
