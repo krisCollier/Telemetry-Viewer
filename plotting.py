@@ -84,13 +84,12 @@ def add_lap_delta(ref_lap, compare_lap):
 
 
 def add_deltas(laps):
-    delta_added_laps = [laps[0]]
     ref_lap = laps[0]
-    for i in range(len(laps)):
-        if i == 0:
-            pass
-        # print(f"Adding delta for {lap.print_lap_name()}")
-        delta_added_laps.append(add_lap_delta(ref_lap, laps[i]))
+    delta_added_laps = [ref_lap]
+    for lap_no in range(len(laps)):
+        if lap_no != 0:
+            # print(f"Adding delta for {lap.print_lap_name()}")
+            delta_added_laps.append(add_lap_delta(ref_lap, laps[lap_no]))
     return delta_added_laps
 
 
@@ -100,40 +99,61 @@ def process_options(laps, options: Options):
 
     return laps
 
+
 def generate_plot(laps, columns, options: Options = None):
     if Options is not None:
         laps = process_options(laps, options)
 
     fig = get_default_fig()
     fig.set_subplots(rows=len(columns), cols=1, shared_xaxes=True, vertical_spacing=0.005,
-                     row_width=[0.2, 0.2, 0.2, 0.2, 0.30])
+                     row_width=[0.2, 0.12, 0.12, 0.12, 0.2, 0.30])
     colours = ['rgba(0, 210, 190, 0.9)', 'rgba(220, 0, 0, 0.9)', 'rgba(6, 0, 239, 0.9)']
     for lap_no, cur_lap in enumerate(laps):
         lap = cur_lap.processed_lap_data
         for row, telem_column in enumerate(columns):
             if telem_column not in lap.columns:
-                print(f"Column '{telem_column}' does not exist in the lap: {cur_lap.print_lap_name()}")
+                # print(f"Column '{telem_column}' does not exist in the lap: {cur_lap.print_lap_name()}")
                 continue
 
             trace = go.Scatter(x=lap['Distance'], y=lap[telem_column], mode='lines', name=cur_lap.print_lap_name(),
                                legendgroup=lap_no, showlegend=True if row == 0 else False, line_color=colours[lap_no])
             fig.add_trace(trace, row=row + 1, col=1)
             fig.update_yaxes(range=[lap[telem_column].min(), lap[telem_column].max()], title_text=telem_column,
-                             nticks=10, row=row + 1, col=1)
+                             nticks=10, row=row + 1, col=1, showgrid=False, zeroline=True)
+            # fig.update_xaxes(
+            #     tickmode='array',
+            #     tickvals=[270, 500, 950, 1430],
+            #     ticktext=['T1', 'Str', 'T2', 'Str']
+            # )
     fig.update_layout(
         xaxis_showticklabels=True,
-        xaxis_title_text="Distance (m)",
-        xaxis_side="top",
+        # xaxis_title_text="Distance (m)",
+        # xaxis_side="top",
         # xaxis4_title_text="Distance (m)",
         margin=dict(t=4, l=4, r=16, b=4),
         # """ SIZE NEEDS FIXING """
-        height=1200,
-        width=2100,
+        height=900,
+        width=1200,
         autosize=False,
     )
+    # fig.update_layout(
+    #     xaxis=dict(
+    #         tickmode='array',
+    #         tickvals=[270, 500, 950, 1430],
+    #         ticktext=['T1', 'Str', 'T2', 'Str']
+    #     )
+    # )
     fig.update_layout(
         showlegend=True  # Disable the default legend
     )
+    fig.update_layout(legend=dict(
+        orientation="h",
+        entrywidth=150,
+        yanchor="bottom",
+        y=1,
+        xanchor="right",
+        x=0.5
+    ))
 
     fig.update_yaxes(
         gridwidth=GRID_WIDTH,
@@ -146,9 +166,6 @@ def generate_plot(laps, columns, options: Options = None):
         gridwidth=GRID_WIDTH,
         gridcolor=GRID_COLOR,
     )
-
-    fig.update_layout(title='Driver Telemetry Data')
-
     fig.show()
 
 
