@@ -25,5 +25,6 @@ Motec requires a pro license (>1000$) to add custom math channels and also doesn
 ### Step-by-step
 
 1. Complete a stint in Assetto Corsa (Needs to include out-in laps).
-2. Open the stint .ld file in motec then export the entire stint to .csv with 20hz (Works best for now... until we've tested different frequencies).
-TBC.
+2. Open the stint .ld file in motec then export the entire stint to .csv with 20hz (Works best for now... until we've tested different frequencies) and both Distance and Time checkboxes ticked (the only reason we use motec i2).
+3. Open Jupyter Lab with the *jupyter lab* in a command prompt within the repository.
+4. tbc
