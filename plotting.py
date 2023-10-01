@@ -1,7 +1,6 @@
 import pandas as pd
 import plotly.subplots as sp
 import plotly.graph_objects as go
-import testing as testy
 import data_retrieval as dr
 
 GRID_COLOR = '#32383e'
